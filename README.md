@@ -183,6 +183,11 @@ To launch the script, log into `izblisbon` and navigate to your Deconwolf direct
 cd /path/to/deconwolf/ # Navigate to your Deconwolf directory
 sbatch dw_psf.sh # Launch the script
 ```
+You'll find a number of my previously generated PSF images on `izbkingston` at:
+```
+/mnt/external.data/MeisterLab/Dario/Code/dw/psf
+```
+
 ### Output PSF images
 The script saves the generated PSF images in a subfolder named `psf` and a log file for each PSF in a subfolder named `logs`. Since every raw image has to be matched with the correct PSF, the files must be named in a consistent manner. The script builds PSF filenames based on the name of the microscope, the magnification, the vertical pixel size, and the fluorophore, for example:`lipsi_100x_z200_gfp.tif`. Notably, the filename does not specify NA, refractive index, and lateral pixel size, which are determined by the objective, the immersion oil, and the combination of objective and camera pixel size, respectively. Since these parameters are not likely to change much for a given microscope, this naming logic should be sufficiently specific—and also more convenient than specifying every single parameter.
 ## Deconvolve images
