@@ -206,4 +206,4 @@ To launch the script, log into `izblisbon` and navigate to your Deconwolf direct
 cd /path/to/deconwolf/ # Navigate to your Deconwolf directory
 sbatch dw.sh # Launch the script
 ```
-The deconvolved images, as well as a maximum intensity projection of each image, are store in a subfolder named `dw`. 4D and 5D images are split into 3D stacks before deconvolution and then put back together. The intermediate files, but not the raw images, will be deleted afterwards. Lastly, for each deconvolved image, a log file is saved in a subfolder named `logs`.
+4D and 5D raw images are split into 3D stacks before deconvolution and then stacked back together. The intermediate files, but not the raw images, will be deleted after stacking. The deconvolved images, as well as a maximum intensity projection of each image, are store in a subfolder named `dw`. Lastly, for each deconvolved image, a log file is saved in a subfolder named `logs`.
