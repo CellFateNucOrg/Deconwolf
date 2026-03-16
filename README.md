@@ -185,11 +185,6 @@ sbatch dw_psf.sh # Launch the script
 ```
 ### Output PSF images
 The script saves the generated PSF images in a subfolder named `psf` and a log file for each PSF in a subfolder named `logs`. Since every raw image has to be matched with the correct PSF, the files must be named in a consistent manner. The script builds PSF filenames based on the name of the microscope, the magnification, the vertical pixel size, and the fluorophore, for example:`lipsi_100x_z200_gfp.tif`. Notably, the filename does not specify NA, refractive index, and lateral pixel size, which are determined by the objective, the immersion oil, and the combination of objective and camera pixel size, respectively. Since these parameters are not likely to change much for a given microscope, this naming logic should be sufficiently specific—and also more convenient than specifying every single parameter.
-This repository comes with a few previously generated PSF files based on:
-- 40x, 60x, and 100x magnifications.
-- Immersion oils used with LIPSI (1.518) and Crest (1.516).
-- A vertical pixel size of 200 nm.
-- The fluorophores DAPI/Hoechst 33342 (461 nm), GFP/mStayGold (510 nm), Alexa Fluor 488 (520 nm), mCherry (640 nm), Janelia Fluor 646 (664 nm), and Alexa Fluor 647 (665 nm). 
 ## Deconvolve images
 To run Deconwolf, specify the following parameters in the `dw.sh` script:
 - `img_dirs`: the directories containing the raw images you want to deconvolve. Note that all of the images must have the same acquisition parameters (pixel size, channels, etc.)
