@@ -199,9 +199,10 @@ Before running Deconwolf, specify the following parameters in the `dw.sh` script
 - `channels`: the indices of the channels you want to deconvolve, starting from zero. For example, if you have an image with three channels and you want to deconvolve channels two and three, this should be `channels=(1 2)`.
 - `fluos`: the fluorophores (i.e., channels) in the image you want to deconvolve. The names of the fluorophores must be identical to those in the PSF filenames and their order must correspond to that of `channels`. Using the previous example, if you have an image with three channels, say Brightfield, mCherry, and GFP, and you want to skip the first channel, this should be: `fluos=(mcherry gfp)`.
 - `scope`: the name of the microscope, which must match with the name of the PSF image.
-- `mag`: the magnification used to acquire the image.
+- `mag`: the total magnification.
 - `z_pixel`: the spacing between planes in nm.
 - `iterations`: the number of rounds of deconvolution you want. The default is 50 iterations.
+
 It is recommended to run the script on one of the stronger GPUs (RTX 4090 or RTX 6000), otherwise it tends to crash, especially with large files. To do this, use the `#SBATCH` command at the beginning of the script:
 ```
 #SBATCH --gres=gpu:rtx4090:1 # Use either this one...
