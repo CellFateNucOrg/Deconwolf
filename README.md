@@ -187,7 +187,7 @@ sbatch dw_psf.sh # Launch the script
 ### Output PSF images
 The script saves the PSF images in a subfolder named `psf` and a log file for each image in a subfolder named `logs`. Since every raw image has to be matched with the correct PSF, the files must be named in a consistent manner. The script builds PSF filenames based on the name of the microscope, the magnification, the vertical pixel size, and the fluorophore, for example:`lipsi_100x_z200_gfp.tif`. Notably, the filename does not specify NA, refractive index, and lateral pixel size, which are determined by the objective, the immersion oil, and the combination of magnification and camera pixel size, respectively. Since these parameters are not likely to change for a given microscope, this naming logic should be sufficiently specific (and also more convenient than specifying every single parameter).
 
-You can find a number of previously generated PSF files on `izbkingston` and copy them to your Deconwolf folder. They are located at:
+You can find a few previously generated PSF files on the `izbkingston` node and copy them to your Deconwolf directory. They are located at:
 ```
 /mnt/external.data/MeisterLab/Dario/Code/dw/psf
 ```
