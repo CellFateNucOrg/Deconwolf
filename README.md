@@ -213,4 +213,4 @@ To launch the script, log into `izblisbon` and navigate to your Deconwolf direct
 cd /path/to/deconwolf/ # Navigate to your Deconwolf directory
 sbatch dw.sh # Launch the script
 ```
-The deconvolved images, as well as a maximum intensity projection of each image, will be stored in a subfolder named `dw`. Note that 4D and 5D images are split up into 3D stacks, separated by channel and/or frame. These intermediate files are later re-stacked and deleted. Like with the PSF images, for each deconvolved image, a log file is stored in a subfolder named `logs`.
+The deconvolved images, as well as a maximum intensity projection of each image, will be stored in a subfolder named `dw`. Note that 4D and 5D images are split up into 3D stacks, separated by channel and/or frame. These intermediate files are later re-stacked and deleted. As for the PSF images, for each deconvolved image, a log file is stored in a subfolder named `logs`.
