@@ -1,4 +1,4 @@
-This repository contains instructions on how to install the Deconwolf  (https://github.com/elgw/deconwolf) as well as scripts for using it to deconvolve multi-dimensional datasets.
+This repository contains instructions on how to install Deconwolf  (https://github.com/elgw/deconwolf) as well as scripts for using it to deconvolve multi-dimensional datasets.
 # How to install Deconwolf
 ## 1. Get mamba-installable dependencies
 1. Log into `izblisbon`.
