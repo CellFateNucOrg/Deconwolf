@@ -190,7 +190,7 @@ To run Deconwolf, specify the following parameters in the `dw.sh` script:
 - `img_dirs`: the directories containing the raw images you want to deconvolve. Note that all of the images must have the same acquisition parameters (pixel size, channels, etc.)
 - `suffix`: the file extension of your raw images, e.g. `tif` or `nd2`. This is to ensure that you don't pass any files other than your images to the Python script.
 - `dw_dir`: your Deconwolf directory (which should contain the `dw_psf.sh` script).
-- `channels`: the indexes of the channels you want to deconvolve, starting from zero. For example, if you have an image with three channels and you want to deconvolve channels two and three, this should be `channels=(1 2)`.
+- `channels`: the indices of the channels you want to deconvolve, starting from zero. For example, if you have an image with three channels and you want to deconvolve channels two and three, this should be `channels=(1 2)`.
 - `fluos`: the fluorophores (i.e., channels) in your image you want to deconvolve. The names of the fluorophores must be identical to those in the PSF filenames and their order must correspond to that of `channels`. Using the previous example, if you have an image with three channels, say Brightfield, mCherry, and GFP, and you want to skip the first channel, this should be: `fluos=(gfp mcherry)`.
 - `scope`: the name of the microscope, which must match that of the corresponding PSF image.
 - `mag`: the magnification used to acquire the image.
