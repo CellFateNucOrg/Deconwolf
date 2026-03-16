@@ -46,7 +46,7 @@ cd $HOME/.local/src/fftw-3.3.10
 make clean # Get rid of temp files
 ./configure --prefix=$HOME/.local --enable-shared --enable-threads --enable-openmp # Prepare files for the compilation
 make # Start the compilation (this may take a few minutes)
-make install # Install, i.e., move the compiled files to where they belong
+make install # Install the compiled files (i.e., move the files to where they belong)
 ```
 
 ```
@@ -136,10 +136,10 @@ rm deconwolf
 ```
 ## 6. Get scripts to run Deconwolf
 1. Clone the Deconwolf repository from the lab Github:
-   ```
-   cd /dir/for/scripts # Navigate to where you want to put the Deconwolf repository
-   git clone https://github.com/CellFateNucOrg/deconwolf.git
-   ```
+```
+cd /dir/for/scripts # Navigate to where you want to put the Deconwolf repository
+git clone https://github.com/CellFateNucOrg/deconwolf.git
+```
 2. Install the required dependencies:
 ```
 mamba activate dw
