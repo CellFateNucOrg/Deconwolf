@@ -9,7 +9,7 @@ from img_utils import img_utils
 
 def run_dw(img, channels, dw_dir, psf_dir, fluos, scope, mag, z_pixel, iterations=50):
     """
-    Deconvolve 4D and 5D images using Deconwolf. Channels and/or frames are split up, deconvolved using the corresponding PSF image, and then stacked back together. Deconvolved images and a maximum intensity projection of each image are stored in a subfolder ('dw').
+    Deconvolve 4D and 5D images using Deconwolf. Channels and/or frames are split up, deconvolved using the corresponding PSF image, and then stacked back together. Deconvolved images and a maximum intensity projection of each image are stored in a subfolder named 'dw'.
     
     Args:
         img (str or Path): Path of the input image.
