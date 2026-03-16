@@ -1,4 +1,4 @@
-Deconvolve microscopy images using the Deconwolf software (https://github.com/elgw/deconwolf). This repository contains instructions on how to install Deconwolf as well as scripts for using it on multi-dimensional datasets.
+This repository contains instructions on how to install the Deconwolf software  (https://github.com/elgw/deconwolf) as well as scripts for using it to deconvolve multi-dimensional datasets.
 # How to install Deconwolf
 ## 1. Get mamba-installable dependencies
 1. Log into `izblisbon`.
@@ -110,7 +110,7 @@ ls $HOME/.local/include/CL | grep cl
 # This should list a number of .h files
 ```
 ## 4. Install Deconwolf
-Once all of the dependencies have been installed, you can install deconwolf.
+Once all of the dependencies have been installed, you can install Deconwolf.
 1. Clone the repository from Github and compile it:
 ```
 cd $HOME/.local/src
@@ -126,7 +126,7 @@ ls $HOME/.local/bin | grep dw
 # This should list dw (for deconvolution) and dw_bw (to generate PSFs)
 ```
 ## 5. Remove source files
-Once the dependencies and deconwolf have been installed, you can optinally remove the source files (again, adjust the version numbers if necessary):
+After the installation, you can optionally remove the source files (again, adjust the version numbers if necessary):
 ```
 cd $HOME/.local/src
 rm fftw-3.3.10
@@ -151,15 +151,15 @@ cd ./deconwolf
 pip install -e img_utils
 ```
 # How to use Deconwolf
-Deconvolution requires the image of a point spread function (a PSF, i.e., the probability distribution of light emitted by a single point source). Every unique combination of emission wavelength, numerical aperture (NA) of the objective, refractive index (n) of the used immersion oil, lateral pixel size (in the final image) and vertical pixel size (the spacing between the planes in a 3D image) requires an individual PSF. There are two ways of acquiring a PSF image: you can either measure them using fluorescent beads (not covered here) or model them, which Deconwolf provides a small program for. The next section explains how you can generate your PSFs using the `dw_psf.sh` script.
-## Generate PSF images
+Deconvolution requires the image of a point spread function (PSF, i.e., the probability distribution of light emitted by a single point source). Each combination of emission wavelength, numerical aperture (NA) of the objective, refractive index (n) of the used immersion oil, lateral pixel size (in the acquired image) and vertical pixel size (the spacing between the planes in a 3D image) requires an individual PSF. There are two ways of acquiring a PSF image: you can either measure it yourself using fluorescent beads (not covered here) or model it. Deconwolf provides a small program for modelling PSFs, which is explained in the next section.
+## Generate a PSF image
 ### Required parameters
-To generate a PSF, you have to provide the following parameters:
+To generate a PSF, you have to know the following parameters:
 - Emission wavelength: the wavelength emitted by the fluorophore after excitation. If you don't know this value, you can look it up in a database: https://www.fpbase.org.
 - NA of the objective: how strongly an objective refracts (and thus collects) light. This is specified on the casing of the objective (usually around 0.95 for 40x, 1.4 for 60x, and 1.45 for 100x).
 - Refractive index of the oil: how strongly the immersion oil refracts light. This should be specified on the vial (usually around 1.51–1.52).
-- Lateral pixel size: the physical distance in nm a single pixel in your raw image corresponds to, which should be specified in the raw image's metadata. You can also calculate this yourself by dividing the physical pixel size of the camera sensor by the total magnification (e.g., for the 100x objective on the LIPSI: 6.5 um / 100 = 65 nm).
-- Vertical pixel size: the distance in nm between two planes in a 3D stack. This should also be specified in the metadata of the raw image.
+- Lateral pixel size: the physical distance in nm a single pixel in the raw image corresponds to, which should be specified in the raw image's metadata. You can also calculate this yourself by dividing the physical pixel size of the camera sensor by the total magnification (e.g., for the 100x objective on the LIPSI: 6.5 um / 100 = 65 nm).
+- Vertical pixel size: the distance in nm between two planes in a 3D stack. This should be specified in the metadata of the raw image, too.
 ### Run the script
 In the `dw_psf.sh`script, specify the following parameters:
 - `dw_dir`: the directory containing your Deconwolf scripts.
@@ -170,7 +170,7 @@ In the `dw_psf.sh`script, specify the following parameters:
 - `xy_pixel`: the lateral pixel size.
 - `z_pixel`: the vertical pixel size.
 - `na`: the objective's numerical aperture.
-Note that the script allows you to generate multiple PSF images at once, but the order of values must match between `mag`, `xy_pixel`, and `na`, and likewise the order between `fluo` and `lambda`. The following configuration, for example, would work:
+Note that the script allows you to generate multiple PSF images at once, but the order must match between `mag`, `xy_pixel`, and `na`, and likewise the order between `fluo` and `lambda`. The following configuration, for example, would work:
 ```
 fluo=(mcherry gfp)
 lambda=(610 510) # 610 corresponds to mcherry and 510 to gfp
@@ -185,23 +185,22 @@ sbatch dw_psf.sh # Launch the script
 ```
 
 ### Output PSF images
-The script saves the generated PSF images in a subfolder named `psf` and a log file for each PSF in a subfolder named `logs`. Since every raw image has to be matched with the correct PSF, the files must be named in a consistent manner. The script builds PSF filenames based on the name of the microscope, the magnification, the vertical pixel size, and the fluorophore, for example:`lipsi_100x_z200_gfp.tif`. Notably, the filename does not specify NA, refractive index, and lateral pixel size, which are determined by the objective, the immersion oil, and the combination of objective and camera pixel size, respectively. Since these parameters are not likely to change much for a given microscope, this naming logic should be sufficiently specific—and also more convenient than specifying every single parameter.
-You'll find a few of my previously generated PSF images on the `izbkingston` server at:
+The script saves the PSF images in a subfolder named `psf` and a log file for each image in a subfolder named `logs`. Since every raw image has to be matched with the correct PSF, the files must be named in a consistent manner. The script builds PSF filenames based on the name of the microscope, the magnification, the vertical pixel size, and the fluorophore, for example:`lipsi_100x_z200_gfp.tif`. Notably, the filename does not specify NA, refractive index, and lateral pixel size, which are determined by the objective, the immersion oil, and the combination of magnification and camera pixel size, respectively. Since these parameters are not likely to change for a given microscope, this naming logic should be sufficiently specific (and also more convenient than specifying every single parameter).
+You can also copy my previously generated PSF images to your Deconwolf folder. They are located at:
 ```
 /mnt/external.data/MeisterLab/Dario/Code/dw/psf
 ```
 ## Deconvolve images
-To run Deconwolf, specify the following parameters in the `dw.sh` script:
-- `img_dirs`: the directories containing the raw images you want to deconvolve. Note that all of the images must have the same acquisition parameters (pixel size, channels, etc.)
-- `suffix`: the file extension of your raw images, e.g. `tif` or `nd2`. This is to ensure that you don't pass any files other than your images to the Python script.
+Before running Deconwolf, specify the following parameters in the `dw.sh` script:
+- `img_dirs`: the directories containing the raw images you want to deconvolve. Note that all of the images must have the same acquisition parameters (magnification, pixel sizes, channels, etc.)
+- `suffix`: the file extension of your raw images, e.g. `tif` or `nd2`. This ensures that you don't inadvertently pass non-image files to the Python script.
 - `dw_dir`: your Deconwolf directory (which should contain the `dw_psf.sh` script).
 - `channels`: the indices of the channels you want to deconvolve, starting from zero. For example, if you have an image with three channels and you want to deconvolve channels two and three, this should be `channels=(1 2)`.
-- `fluos`: the fluorophores (i.e., channels) in your image you want to deconvolve. The names of the fluorophores must be identical to those in the PSF filenames and their order must correspond to that of `channels`. Using the previous example, if you have an image with three channels, say Brightfield, mCherry, and GFP, and you want to skip the first channel, this should be: `fluos=(mcherry gfp)`.
-- `scope`: the name of the microscope, which must match that of the corresponding PSF image.
+- `fluos`: the fluorophores (i.e., channels) in the image you want to deconvolve. The names of the fluorophores must be identical to those in the PSF filenames and their order must correspond to that of `channels`. Using the previous example, if you have an image with three channels, say Brightfield, mCherry, and GFP, and you want to skip the first channel, this should be: `fluos=(mcherry gfp)`.
+- `scope`: the name of the microscope, which must match with the name of the PSF image.
 - `mag`: the magnification used to acquire the image.
 - `z_pixel`: the spacing between planes in nm.
 - `iterations`: the number of rounds of deconvolution you want. The default is 50 iterations.
-
 It is recommended to run the script on one of the stronger GPUs (RTX 4090 or RTX 6000), otherwise it tends to crash, especially with large files. To do this, use the `#SBATCH` command at the beginning of the script:
 ```
 #SBATCH --gres=gpu:rtx4090:1 # Use either this one...
@@ -212,4 +211,4 @@ To launch the script, log into `izblisbon` and navigate to your Deconwolf direct
 cd /path/to/deconwolf/ # Navigate to your Deconwolf directory
 sbatch dw.sh # Launch the script
 ```
-The deconvolved images, as well as a maximum intensity projection of each image, are stored in a subfolder named `dw`. Note that 4D and 5D images are split up into 3D stacks separated by channel and/or frame. These intermediate files are then re-stacked and deleted. As with the PSF images, for each deconvolved image, a log file is stored in a subfolder named `logs`.
+The deconvolved images, as well as a maximum intensity projection of each image, will be stored in a subfolder named `dw`. Note that 4D and 5D images are split up into 3D stacks, separated by channel and/or frame. These intermediate files are later re-stacked and deleted. Like with the PSF images, for each deconvolved image, a log file is stored in a subfolder named `logs`.
