@@ -21,8 +21,8 @@ The remaining dependencies cannot be installed with conda and have to be downloa
 ```
 mkdir $HOME/.local/src # Make folder in your home directory for the source files
 export CMAKE_PREFIX_PATH=$HOME/.local # Ensure CMake (the compiler) finds the source files
-export PATH=$HOME/.local/bin:$PATH # Make binaries in .local visible to the shell
-export LD_LIBRARY_PATH=$HOME/.local/lib:$LD_LIBRARY_PATH # Make shared libraries in .local visible to the shell
+export PATH=$PATH:$HOME/.local/bin >> $HOME/.bashrc # Make binaries in .local visible to the shell
+export LD_LIBRARY_PATH=$HOME/.local/lib:$LD_LIBRARY_PATH >> $HOME/.bashrc # Make shared libraries in .local visible to the shell
 ```
 2. Download the following libraries (should be archived such as .tar, .tar.xz or .tar.gz):
 	- FFTW3 (for running Fourier transforms): https://www.fftw.org/download.html
@@ -184,7 +184,7 @@ cd /path/to/deconwolf/ # Navigate to your Deconwolf directory
 sbatch dw_psf.sh # Launch the script
 ```
 ### Output PSF images
-The script saves a `.tif` file of each generated PSF in a subfolder named `psf`. Since every image slice has to be matched with the correct PSF, the files must be named in a consistent manner. The script builds PSF filenames based on the name of the microscope, the magnification, the vertical pixel size, and the fluorophore, for example:`lipsi_100x_z200_gfp.tif`. Notably, the filename does not specify NA, refractive index, and lateral pixel size, which are determined by the objective, the immersion oil, and the combination of objective and camera pixel size, respectively. Since these parameters are not likely to change much for a given microscope, this naming logic should be sufficiently specific—and also more convenient than specifying every single parameter.
+The script saves the generated PSF images in a subfolder named `psf` and a log file for each PSF in a subfolder named `logs`. Since every raw image has to be matched with the correct PSF, the files must be named in a consistent manner. The script builds PSF filenames based on the name of the microscope, the magnification, the vertical pixel size, and the fluorophore, for example:`lipsi_100x_z200_gfp.tif`. Notably, the filename does not specify NA, refractive index, and lateral pixel size, which are determined by the objective, the immersion oil, and the combination of objective and camera pixel size, respectively. Since these parameters are not likely to change much for a given microscope, this naming logic should be sufficiently specific—and also more convenient than specifying every single parameter.
 This repository comes with a few previously generated PSF files based on:
 - 40x, 60x, and 100x magnifications.
 - Immersion oils used with LIPSI (1.518) and Crest (1.516).
@@ -201,9 +201,15 @@ To run Deconwolf, specify the following parameters in the `dw.sh` script:
 - `mag`: the magnification used to acquire the image.
 - `z_pixel`: the spacing between planes in nm.
 - `iterations`: the number of rounds of deconvolution you want. The default is 50 iterations.
+
+It is recommended to run the script on one of the stronger GPUs (RTX 4090 or RTX 6000), otherwise it tends to crash, especially with large files. To do this, use the `#SBATCH` command at the beginning of the script:
+```
+#SBATCH --gres=gpu:rtx4090:1 # Use either this one...
+#SBATCH --gres=gpu:rtx6000:1 # ...or this one
+```
 To launch the script, log into `izblisbon` and navigate to your Deconwolf directory:
 ```
 cd /path/to/deconwolf/ # Navigate to your Deconwolf directory
 sbatch dw.sh # Launch the script
 ```
-4D and 5D raw images are split into 3D stacks before deconvolution and then stacked back together. The intermediate files, but not the raw images, will be deleted after stacking. The deconvolved images, as well as a maximum intensity projection of each image, are store in a subfolder named `dw`. Lastly, for each deconvolved image, a log file is saved in a subfolder named `logs`.
+The deconvolved images, as well as a maximum intensity projection of each image, are stored in a subfolder named `dw`. Note that 4D and 5D images are split up into 3D stacks separated by channel and/or frame. These intermediate files are then re-stacked and deleted. As with the PSF images, for each deconvolved image, a log file is stored in a subfolder named `logs`.
