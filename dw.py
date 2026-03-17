@@ -53,7 +53,7 @@ def run_dw(img, channels, dw_dir, psf_dir, fluos, scope, mag, z_pixel, iteration
         tif_paths = [img_utils.make_tif(img)]
         to_delete.append(tif_paths)
 
-    # Deconvolve image
+    # Deconvolve 3D images
     for i, c in enumerate(channels):
         current_tifs = [p for p in tif_paths if f'c{str(c).zfill(3)}' in str(p)]
         for tif_path in current_tifs:
@@ -67,10 +67,10 @@ def run_dw(img, channels, dw_dir, psf_dir, fluos, scope, mag, z_pixel, iteration
             params = [
                 "dw",
                 "--iter", str(iterations),
-                "--gpu",
+                "--gpu", # Run 'dw' with GPU
                 "--out", str(dw_path),
-                str(tif_path),
-                str(psf_path)
+                str(tif_path), # Raw image
+                str(psf_path) # PSF image
             ]
             
             subprocess.run(params, check=True)
