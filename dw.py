@@ -52,7 +52,8 @@ def run_dw(img, channels, dw_dir, psf_dir, fluos, scope, mag, z_pixel, iteration
     else:
         tif_paths = [img_utils.make_tif(img)]
         to_delete.append(tif_paths)
-        
+
+    # Deconvolve image
     for i, c in enumerate(channels):
         current_tifs = [p for p in tif_paths if f'c{str(c).zfill(3)}' in str(p)]
         for tif_path in current_tifs:
@@ -80,7 +81,8 @@ def run_dw(img, channels, dw_dir, psf_dir, fluos, scope, mag, z_pixel, iteration
         tif=True,
         keep_imgs=False
     )
-
+    
+    # Save a MIP of each deconvolved image
     for stack in dw_stacks:
         p = Path(stack)
         img = BioImage(stack)
@@ -97,6 +99,7 @@ def run_dw(img, channels, dw_dir, psf_dir, fluos, scope, mag, z_pixel, iteration
             metadata={'axes': 'TZCYX'}
         )
 
+    # Delete intermediate files
     img_utils.remove_paths(to_delete)
 
 
