@@ -43,7 +43,8 @@ def run_dw(img, channels, dw_dir, psf_dir, fluos, scope, mag, z_pixel, iteration
                 tif_path,
                 zarr.open_array(array)[:],
                 imagej=True,
-                metadata={'axes': 'TZCYX'})
+                metadata={'axes': 'TZCYX'}
+            )
             tif_paths.append(tif_path)
             to_delete.append(tif_path)
 
