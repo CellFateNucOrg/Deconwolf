@@ -16,7 +16,7 @@ mamba activate deconwolf
 mamba install libtiff openmp # Install the libraries
 ```
 ## 2. Get remaining dependencies
-The remaining dependencies cannot be installed with conda/mamba and have to be compiled and installed manually:
+The remaining dependencies cannot be installed with conda/mamba and have to be compiled manually:
 1. Make a directory for the source files to be compiled:
 ```
 mkdir $HOME/.local/src # Make folder in your home directory for the source files
@@ -24,7 +24,7 @@ export CMAKE_PREFIX_PATH=$HOME/.local # Ensure CMake (the compiler) finds the so
 export PATH=$PATH:$HOME/.local/bin >> $HOME/.bashrc # Make binaries in .local visible to the shell
 export LD_LIBRARY_PATH=$HOME/.local/lib:$LD_LIBRARY_PATH >> $HOME/.bashrc # Make shared libraries in .local visible to the shell
 ```
-2. Download the following libraries (should be archived such as .tar, .tar.xz or .tar.gz):
+2. Download the following libraries (should be archived files such as .tar, .tar.xz or .tar.gz):
 	- FFTW3 (for running Fourier transforms): https://www.fftw.org/download.html
 	- GSL (GNU Scientific Library): https://ftp.gnu.org/gnu/gsl/
 	- LibPNG (to handle PNG files): https://sourceforge.net/projects/libpng/files/
