@@ -129,10 +129,10 @@ ls $HOME/.local/bin | grep dw
 After the installation, you can optionally remove the source files (again, adjust the version numbers if necessary):
 ```
 cd $HOME/.local/src
-rm fftw-3.3.10
-rm gsl-2.8
-rm libpng-1.6.55
-rm deconwolf
+rm -r fftw-3.3.10
+rm -r gsl-2.8
+rm -r libpng-1.6.55
+rm -r deconwolf
 ```
 ## 6. Get scripts to run Deconwolf
 1. Clone the Deconwolf repository from the lab Github:
