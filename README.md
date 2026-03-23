@@ -12,7 +12,7 @@ rm Miniforge3-$(uname)-$(uname -m).sh # Remove the script
 3. Install LibTIFF and OpenMP:
 ```
 mamba create -n dw python=3.13.2 # Make an env with python < 3.14
-mamba activate deconwolf
+mamba activate dw
 mamba install libtiff openmp # Install the libraries
 ```
 ## 2. Get remaining dependencies
@@ -35,8 +35,8 @@ cd /dir/with/files
 ```
 5. Extract the files. Adjust the numbers after `fftw` and `rm` in case you downloaded a newer version of any of the libraries:
 ```
-tar -xf fftw-3.3.10.tar.gz -C $HOME/.local/src && rm fftw-3.3.10.tar
-tar -xf gsl-latest.tar -C $HOoME/.local/src && rm gsl-latest.tar
+tar -xf fftw-3.3.10.tar.gz -C $HOME/.local/src && rm fftw-3.3.10.tar.gz
+tar -xf gsl-latest.tar.gz -C $HOME/.local/src && rm gsl-latest.tar.gz
 tar -xf libpng-1.6.55.tar.xz -C $HOME/.local/src && rm libpng-1.6.55.tar.xz
 ```
 6. Install FFTW3 with 64-bit and 32-bit precision (Deconwolf requires both):
