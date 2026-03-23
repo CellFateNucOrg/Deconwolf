@@ -143,7 +143,7 @@ git clone https://github.com/CellFateNucOrg/deconwolf.git
 2. Install the required dependencies:
 ```
 mamba activate dw
-pip install numpy zarr json tifffile bioio bioio_tifffile bioio_nd2 bioio_czi bioio_lif bioio_bioformats
+pip install numpy zarr pypi-json tifffile bioio bioio_tifffile bioio_nd2 bioio_czi bioio_lif bioio_bioformats
 ```
 3. Install the `img_utils` package (contains helper functions for processing the images):
 ```
