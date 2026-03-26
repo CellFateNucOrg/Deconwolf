@@ -21,8 +21,10 @@ The remaining dependencies cannot be installed with conda/mamba and have to be c
 ```
 mkdir $HOME/.local/src # Make folder in your home directory for the source files
 export CMAKE_PREFIX_PATH=$HOME/.local # Ensure CMake (the compiler) finds the source files
-export PATH=$PATH:$HOME/.local/bin >> $HOME/.bashrc # Make binaries in .local visible to the shell
-export LD_LIBRARY_PATH=$HOME/.local/lib:$LD_LIBRARY_PATH >> $HOME/.bashrc # Make shared libraries in .local visible to the shell
+echo 'export PATH="$PATH:$HOME/.local/bin"' >> $HOME/.bashrc # Make binaries in .local visible to the shell
+echo 'export LD_LIBRARY_PATH="$HOME/.local/lib:$LD_LIBRARY_PATH" >> $HOME/.bashrc # Make shared libraries in .local visible to the shell
+source $HOME/.bashrc # rerun .bashrc so environmental variables are updated
+mamba activate dw  # reactivate mamba env for further installation
 ```
 2. Download the following libraries (should be archived files such as .tar, .tar.xz or .tar.gz):
 	- FFTW3 (for running Fourier transforms): https://www.fftw.org/download.html
