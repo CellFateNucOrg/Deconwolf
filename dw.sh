@@ -8,14 +8,12 @@
 
 # Directories with raw images
 img_dirs=(
-# /Volumes/external.data/MeisterLab/Dario/SDC/SDC1/1273/20260326_e_if
-# /Volumes/external.data/MeisterLab/Dario/SDC/DPY27/1268/20260325_e_if
-/Volumes/external.data/MeisterLab/Dario/Code/test
+
 )
 
 # Configuration
 suffix=nd2
-dw_dir=/Volumes/external.data/MeisterLab/Dario/Code/dw
+dw_dir=/path/to/deconwolf
 dw_dir=${dw_dir/Volumes/mnt}
 psf_dir=${dw_dir}/psf
 channels=(0 1)
