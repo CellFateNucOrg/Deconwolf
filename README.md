@@ -204,8 +204,9 @@ Before running Deconwolf, specify the following parameters in the `dw.sh` script
 - `scope`: the name of the microscope, which must match with that in the PSF filename.
 - `mag`: the total magnification.
 - `z_pixel`: the spacing between planes in nm.
-- `scale`: whether to rescale the deconvolved images. If True (default), each pixel value is multiplied by $\frac{2^{16}-1}{I_{max}}$, i.e., the bit depth divided by the maximum pixel value (in the 32-bit image, which is what Deconwolf uses internally). Rescaling prevents image saturation but makes histograms less comparable between different images.
 - `iterations`: the number of rounds of deconvolution you want. The default is 50 iterations.
+- `scale`: whether to rescale the deconvolved images. If True (default), each pixel value is multiplied by $\frac{2^{16}-1}{I_{max}}$, i.e., the bit depth divided by the maximum pixel value (in the 32-bit image, which is what Deconwolf uses internally). Rescaling prevents image saturation but makes histograms less comparable between different images.
+
 
 It is recommended to run the script on one of the stronger GPUs (RTX 4090 or RTX 6000), otherwise it tends to crash, especially with large files. To do so, use the `#SBATCH` command in the script:
 ```
