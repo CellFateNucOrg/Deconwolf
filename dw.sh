@@ -21,7 +21,7 @@ fluos=(mcherry gfp)
 scope=lipsi
 mag=100
 z_pixel=200
-scale=False
+scale=True
 iterations=50
 
 # Activate env
