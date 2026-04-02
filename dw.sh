@@ -22,7 +22,7 @@ scope=lipsi
 mag=100
 z_pixel=200
 iterations=50
-scale=True
+scale=False
 
 # Activate env
 source $HOME/miniforge3/bin/activate dw
