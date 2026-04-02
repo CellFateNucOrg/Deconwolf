@@ -21,8 +21,8 @@ fluos=(mcherry gfp)
 scope=lipsi
 mag=100
 z_pixel=200
-scale=True
 iterations=50
+scale=True
 
 # Activate env
 source $HOME/miniforge3/bin/activate dw
