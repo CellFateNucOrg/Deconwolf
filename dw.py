@@ -69,6 +69,7 @@ def run_dw(img, channels, dw_dir, psf_dir, fluos, scope, mag, z_pixel, scale=Fal
                 "--iter", str(iterations),
                 "--gpu", # Run 'dw' with GPU
                 "--out", str(dw_path),
+                "--float",
                 str(tif_path),
                 str(psf_path)
             ]
@@ -115,8 +116,8 @@ def get_args():
     parser.add_argument("-s", "--scope", required=True, help="Name of the microscope (required to locate PSF)")
     parser.add_argument("-m", "--mag", required=True, help="Magnification of the objective (required to locate PSF)")
     parser.add_argument("-z", "--z_pixel", required=True, help="Vertical pixel size in nm (required to locate PSF)")
-    parser.add_argument("-b", "--scale", required=True, help="Wheter to scale the deconvolved image to the full bit depth")
     parser.add_argument("-n", "--iterations", type=int, required=True, help="Number of iterations of deconvolution")
+    parser.add_argument("-b", "--scale", required=True, help="Wheter to scale the deconvolved image to the full bit depth")
     return parser.parse_args()
 
 
@@ -129,8 +130,8 @@ def main():
     z_pixel = args.z_pixel
     fluos = args.fluos
     psf_dir = args.psf_dir
-    scale = args.scale.lower() in ('1', 'true', 'yes')
     iterations = args.iterations
+    scale = args.scale.lower() in ('1', 'true', 'yes')
 
     dw_dir = Path(imgs[0]).parent / 'dw'
     dw_dir.mkdir(parents=True, exist_ok=True)
@@ -145,8 +146,8 @@ def main():
             scope=scope,
             mag=mag,
             z_pixel=z_pixel,
-            scale=scale,
             iterations=iterations,
+            scale=scale,
             dw_dir=dw_dir
         )
 
