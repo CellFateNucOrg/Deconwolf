@@ -69,8 +69,8 @@ def run_dw(img, channels, dw_dir, psf_dir, fluos, scope, mag, z_pixel, scale=Fal
                 "--iter", str(iterations),
                 "--gpu", # Run 'dw' with GPU
                 "--out", str(dw_path),
-                str(tif_path),
-                str(psf_path)
+                str(tif_path), # Raw image
+                str(psf_path) # PSF image
             ]
             
             if not scale:
