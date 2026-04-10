@@ -1,6 +1,45 @@
 This repository contains instructions on how to install Deconwolf  (https://github.com/elgw/deconwolf) as well as scripts for using it to deconvolve multi-dimensional datasets.
-# How to install Deconwolf
-## 1. Get mamba-installable dependencies
+
+Scripts and installation instructions created by Dario Bernasconi. Apptainer containers and modified apptained scripts created by Jennifer Semple.
+
+# 1. Deconwolf container - no installation required on server
+The easist way to run deconwolf is using and apptainer container on the cluster, as this requires no installation. Apptainer is already available on the cluster. A pre-built container (.sif file) is available on the server in the  `/mnt/external.data/MeisterLab/containers/` directory. The `deconwolf_custom.sif`container also contains Dario's custom img_utils and scripts. the `deconwolf_only.sif` only contains deconwolf itself. The container definition files used to build these containers are in the apptainer_def folder.
+
+To run this container you use modified versions of dario's scripts that point to the container and bind certain paths so that they can be seen inside the container. In the tests I ran it seems to run even faster than the installed environment descibed in section 2. 
+
+To download the scripts of the dw_apptainer branch, go to the directory with your images and type:
+```
+git clone --branch dw_apptainer git@github.com:CellFateNucOrg/Deconwolf.git
+```
+go into the Deconwolf directory and create a subdirectory called psf:
+```
+cd Deconwolf
+mkdir -p psf
+```
+
+# 1.1 Using deconwolf to create a PSF
+To create an appropriate psf for you images you need to use the `dw_psf_apptainer.sh` script. Adjust the parameters according to the microscope and image settings your images have. See detailed explanation in [section 3.1](## 3.1 Generate a PSF image) below. Once you have modified the parameters in dw_psf_apptainer.sh you can then run the script with:
+
+```
+sbatch dw_psf_apptainer.sh
+```
+
+Note that Dario has already created many PSFs for the microscopes we routinely use, so maybe you can use one of those:
+
+```
+/mnt/external.data/MeisterLab/Dario/Code/dw/psf
+```
+Just copy the appropriate psf from there into your Deconwolf/psf directory.
+
+# 1.2 Deconvolving images
+Once you have the psfs you need, you can deconvolve images with the `dw_apptainer.sh`script. Adjust the parameters according to the microscope and image settings your images have. See detailed explanation in [section 3.2](## 3.2 Deconvolve images) below. Once you have modified the parameters in dw_psf_apptainer.sh you can then run the script with:
+
+```
+sbatch dw_apptainer.sh
+```
+
+# 2. How to install Deconwolf
+## 2.1. Get mamba-installable dependencies
 1. Log into `izblisbon`.
 2. In case you don't have mamba/conda yet, install it:
 ```
@@ -15,7 +54,7 @@ mamba create -n dw python=3.13.2 # Make an env with python < 3.14
 mamba activate dw
 mamba install libtiff openmp # Install the libraries
 ```
-## 2. Get remaining dependencies
+## 2.2. Get remaining dependencies
 The remaining dependencies cannot be installed with conda/mamba and have to be compiled manually:
 1. Make a directory for the source files to be compiled:
 ```
@@ -86,7 +125,7 @@ ls $HOME/.local/lib | grep libpng
 ls $HOME/.local/lib | grep gsl
 # This should list 'libgsl' files with .a/.so extensions
 ```
-## 3. Link OpenCL
+## 2.3. Link OpenCL
 GPU acceleration requires the OpenCL library, which is installed on the server but needs to be linked in `.local`.
 1. Get the headers (contain instructions for the compiler) and move them to `.local`:
 ```
@@ -111,7 +150,7 @@ ls $HOME/.local/lib | grep OpenCL
 ls $HOME/.local/include/CL | grep cl
 # This should list a number of .h files
 ```
-## 4. Install Deconwolf
+## 2.4. Install Deconwolf
 Once all of the dependencies have been installed, you can install Deconwolf.
 1. Clone the repository from Github and compile it:
 ```
@@ -127,7 +166,7 @@ cmake --install .
 ls $HOME/.local/bin | grep dw
 # This should list dw (for deconvolution) and dw_bw (to generate PSFs)
 ```
-## 5. Remove source files
+## 2.5. Remove source files
 After the installation, you can optionally remove the source files (again, adjust the version numbers if necessary):
 ```
 cd $HOME/.local/src
@@ -136,7 +175,7 @@ rm -r gsl-2.8
 rm -r libpng-1.6.55
 rm -r deconwolf
 ```
-## 6. Get scripts to run Deconwolf
+## 2.6. Get scripts to run Deconwolf
 1. Clone the Deconwolf repository from the lab Github:
 ```
 cd /dir/for/scripts # Navigate to where you want to put the Deconwolf repository
@@ -152,9 +191,9 @@ pip install numpy zarr pypi-json tifffile bioio bioio_tifffile bioio_nd2 bioio_c
 cd ./deconwolf
 pip install -e img_utils
 ```
-# How to use Deconwolf
+# 3. How to use Deconwolf
 Deconvolution requires the image of a point spread function (PSF, i.e., the probability distribution of light emitted by a single point source). Every unique combination of emission wavelength, numerical aperture (NA) of the objective, refractive index (n) of the used immersion oil, lateral pixel size (in the acquired image) and vertical pixel size (the spacing between the planes in a 3D image) requires an individual PSF. There are two ways of creating a PSF image: you can either acquire it using fluorescent beads (not covered here) or model it. Deconwolf provides a small program for modelling PSFs, which is explained in the following section.
-## Generate a PSF image
+## 3.1 Generate a PSF image
 ### Required parameters
 To model a PSF, you have to know the following parameters:
 - Emission wavelength: the wavelength emitted by the fluorophore after excitation. If you don't know this value, you can look it up in a database: https://www.fpbase.org.
@@ -194,7 +233,7 @@ You can also copy my previously generated PSF images to your Deconwolf directory
 ```
 /mnt/external.data/MeisterLab/Dario/Code/dw/psf
 ```
-## Deconvolve images
+## 3.2 Deconvolve images
 Before running Deconwolf, specify the following parameters in the `dw.sh` script:
 - `img_dirs`: the directories containing the raw images you want to deconvolve. Note that all of the images must have the same acquisition parameters (magnification, pixel sizes, channels, etc.)
 - `suffix`: the file extension of your raw images, e.g. `tif` or `nd2`. This ensures that you don't inadvertently pass non-image files to the Python script.
