@@ -1,6 +1,6 @@
 This repository contains instructions on how to install Deconwolf  (https://github.com/elgw/deconwolf) as well as scripts for using it to deconvolve multi-dimensional datasets.
 
-Scripts and installation instructions created by Dario Bernasconi. Apptainer containers and modified apptained scripts created by Jennifer Semple.
+Scripts, installation instructions, and deconwolf usage instructions created by Dario Bernasconi. Apptainer containers and modified apptainer scripts created by Jennifer Semple.
 
 # 1. Deconwolf container - no installation required on server
 The easist way to run deconwolf is using and apptainer container on the cluster, as this requires no installation. Apptainer is already available on the cluster. A pre-built container (.sif file) is available on the server in the  `/mnt/external.data/MeisterLab/containers/` directory. The `deconwolf_custom.sif`container also contains Dario's custom img_utils and scripts. the `deconwolf_only.sif` only contains deconwolf itself. The container definition files used to build these containers are in the apptainer_def folder.
