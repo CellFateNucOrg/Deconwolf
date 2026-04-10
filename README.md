@@ -18,7 +18,7 @@ mkdir -p psf
 ```
 
 # 1.1 Using deconwolf to create a PSF
-To create an appropriate psf for you images you need to use the `dw_psf_apptainer.sh` script. Adjust the parameters according to the microscope and image settings your images have. See detailed explanation in [section 3.1](##-3.1-Generate-a-PSF-image) below. Once you have modified the parameters in dw_psf_apptainer.sh you can then run the script with:
+To create an appropriate psf for you images you need to use the `dw_psf_apptainer.sh` script. Adjust the parameters according to the microscope and image settings your images have. See detailed explanation in [section 3.1](#-3.1-Generate-a-PSF-image) below. Once you have modified the parameters in dw_psf_apptainer.sh you can then run the script with:
 
 ```
 sbatch dw_psf_apptainer.sh
@@ -32,7 +32,7 @@ Note that Dario has already created many PSFs for the microscopes we routinely u
 Just copy the appropriate psf from there into your Deconwolf/psf directory.
 
 # 1.2 Deconvolving images
-Once you have the psfs you need, you can deconvolve images with the `dw_apptainer.sh`script. Adjust the parameters according to the microscope and image settings your images have. See detailed explanation in [section 3.2](##-3.2-Deconvolve-images) below. Once you have modified the parameters in dw_psf_apptainer.sh you can then run the script with:
+Once you have the psfs you need, you can deconvolve images with the `dw_apptainer.sh`script. Adjust the parameters according to the microscope and image settings your images have. See detailed explanation in [section 3.2](#-3.2-Deconvolve-images) below. Once you have modified the parameters in dw_psf_apptainer.sh you can then run the script with:
 
 ```
 sbatch dw_apptainer.sh
