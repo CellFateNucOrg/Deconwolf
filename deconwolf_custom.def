@@ -1,0 +1,87 @@
+Bootstrap: docker
+From: nvidia/cuda:13.2.0-cudnn-devel-ubuntu24.04
+
+%labels
+    Author "Jennifer Semple"
+    Version "1.0"
+    Description "Apptainer container for Deconwolf (GPU-enabled)"
+
+%environment
+    export PATH=/opt/deconwolf/bin:$PATH   
+    export PATH=/opt/dw_dario/venv/bin:$PATH  
+
+%post
+    set -e
+
+    echo "Updating base system..."
+    apt-get update && apt-get install -y \
+        build-essential \
+        cmake \
+        pocl-opencl-icd ocl-icd-opencl-dev clinfo \
+        git \
+        libfftw3-dev \
+        libtiff-dev \
+        libpng-dev \
+        libjpeg-dev \
+        zlib1g-dev \
+        libgsl-dev \
+        libeigen3-dev \
+        libopenblas-dev \
+        liblapack-dev \
+        libomp-dev \
+        wget \
+        python3 \
+        python3-venv \
+        python3-pip \
+        ca-certificates
+        
+      
+    # get the opencl header
+    mkdir -p /usr/local/include/CL
+    git clone https://github.com/KhronosGroup/OpenCL-Headers.git
+    cp OpenCL-Headers/CL/* /usr/local/include/CL/ && rm -rf OpenCL-Headers  
+    
+    # link the opencl headers
+    ln -sf /usr/lib/x86_64-linux-gnu/libOpenCL.so.1 /usr/local/lib/libOpenCL.so
+    
+    # export the headers so the compiler can find them
+    export OpenCL_INCLUDE_DIR=/usr/local/include
+    export OpenCL_LIBRARY=/usr/local/lib/libOpenCL.so
+    
+        
+    echo "Creating install directory for deconwolf"
+    mkdir -p /opt/deconwolf && cd /opt/deconwolf
+    git clone https://github.com/elgw/deconwolf src
+    cd src
+
+    echo "Building Deconwolf..."
+    mkdir builddir
+    cd builddir
+    cmake ..
+    cmake --build .
+    cmake --install .
+ 
+    mkdir -p /opt/deconwolf/bin
+    cp dw /opt/deconwolf/bin/
+
+    ####### custom scripts for processing images with deconwolf in python ######
+    # Clone our Deconwolf repository
+    git clone https://github.com/CellFateNucOrg/Deconwolf.git /opt/dw_dario
+    
+    # Create venv
+    mkdir -p /opt/dw_dario/venv
+    python3 -m venv /opt/dw_dario/venv
+    /opt/dw_dario/venv/bin/pip3 install numpy zarr pypi-json tifffile bioio bioio_tifffile bioio_nd2 bioio_czi bioio_lif bioio_bioformats
+    
+    # Install img_utils (Python module)
+    /opt/dw_dario/venv/bin/pip3 install /opt/dw_dario/img_utils
+	####### end of custom scripts for running deconwolf from python #########
+	
+    echo "Cleaning up..."
+    apt-get clean    
+    rm -rf /var/lib/apt/lists/*
+
+%runscript
+    exec dw "$@"
+
+
