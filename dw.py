@@ -2,12 +2,18 @@ import argparse
 import subprocess
 from pathlib import Path
 import zarr
-import tifffile
 from bioio import BioImage
-from img_utils import img_utils
+from bioio_ome_tiff.writers import OmeTiffWriter
+
+import sys
+sys.path.append('..')
+
+from utils.io import unpack_zarr, remove_paths
+from utils.stack import split_stack, stack_images
+from utils.project import project_data
 
 
-def run_dw(img, channels, dw_dir, psf_dir, fluos, scope, mag, z_pixel, scale=False, iterations=50):
+def run_dw(img, channels, dw_dir, psf_dir, fluos, scope, mag, z_pixel, scale=False, tiles=False, iterations=50):
     """
     Deconvolve 4D and 5D images using Deconwolf. Channels and/or frames are split up, deconvolved using the corresponding PSF image, and then stacked back together. Deconvolved images and a maximum intensity projection of each image are stored in a subfolder named 'dw'.
     
@@ -23,7 +29,7 @@ def run_dw(img, channels, dw_dir, psf_dir, fluos, scope, mag, z_pixel, scale=Fal
     """
     p = Path(img)
     
-    split_dims = "".join([d for d in 'TC' if BioImage(img).dims[d][0] > 1])
+    split_dims = 'TC' if BioImage(img).dims['T'][0] > 1 else 'C'
     
     tif_paths = []
     dw_paths = []
@@ -31,34 +37,28 @@ def run_dw(img, channels, dw_dir, psf_dir, fluos, scope, mag, z_pixel, scale=Fal
 
     # If the image is 4D/5D, split it up and save the slices as plain TIFF
     if len(split_dims) >= 1:
-        zarr_dir = img_utils.split_stack(img=p, split_dims=split_dims) # Input should be TZCYX
-        groups, arrays = img_utils.unpack_zarr(zarr_dir)
+        zarr_dir = split_stack(img=p, split_dims=split_dims) # Input should be TCZYX
+        groups, arrays = unpack_zarr(zarr_dir)
         to_delete.append(groups)
         
         make_tifs = [a for a in arrays for c in channels if str(c).zfill(3) in str(a)]
 
         for array in make_tifs:
             tif_path = Path(img).with_name(array.stem).with_suffix('.tif')
-            tifffile.imwrite(
-                tif_path,
+            OmeTiffWriter.save(
                 zarr.open_array(array)[:],
-                imagej=True,
-                metadata={'axes': 'TZCYX'}
-            )
+                tif_path,
+                tifffile_kwargs={"compression": 0}
+                )
             tif_paths.append(tif_path)
             to_delete.append(tif_path)
-
-    # If the image is 3D, save it as a plain TIFF
-    else:
-        tif_paths = [img_utils.make_tif(img)]
-        to_delete.append(tif_paths)
 
     # Deconvolve 3D images
     for i, c in enumerate(channels):
         current_tifs = [p for p in tif_paths if f'c{str(c).zfill(3)}' in str(p)]
         for tif_path in current_tifs:
             p = Path(tif_path)
-            data = BioImage(p).get_image_data('TZCYX')
+            data = BioImage(p).get_image_data('TCZYX')
             dw_path = dw_dir.joinpath(f"{p.stem}_dw.tif")
             dw_paths.append(dw_path)
             
@@ -75,10 +75,13 @@ def run_dw(img, channels, dw_dir, psf_dir, fluos, scope, mag, z_pixel, scale=Fal
             
             if not scale:
                 params += ["--scaling", "1"] # Set scaling to 1 if scale == False
+            
+            if tiles > 0:
+                params += ["--tilesize", str(tiles)]
                    
             subprocess.run(params, check=True)
 
-    dw_stacks = img_utils.stack_images(
+    dw_stacks = stack_images(
         imgs=dw_paths,
         stack_dims=split_dims,
         tif=True,
@@ -92,18 +95,13 @@ def run_dw(img, channels, dw_dir, psf_dir, fluos, scope, mag, z_pixel, scale=Fal
         
         tif_path = p.parent / f"{p.stem}_max.tif"
         
-        data = img.get_image_data('TZCYX')
-        proj_data = img_utils.project_data(data)
-        
-        tifffile.imwrite(
-            tif_path,
-            proj_data.astype(proj_data.dtype),
-            imagej=True,
-            metadata={'axes': 'TZCYX'}
-        )
+        data = img.get_image_data('TCZYX')
+        proj_data = project_data(data)
+       
+        OmeTiffWriter.save(proj_data.astype(proj_data.dtype), tif_path)
 
     # Delete intermediate files
-    img_utils.remove_paths(to_delete)
+    remove_paths(to_delete)
 
 
 def get_args():
@@ -115,8 +113,9 @@ def get_args():
     parser.add_argument("-s", "--scope", required=True, help="Name of the microscope (required to locate PSF)")
     parser.add_argument("-m", "--mag", required=True, help="Magnification of the objective (required to locate PSF)")
     parser.add_argument("-z", "--z_pixel", required=True, help="Vertical pixel size in nm (required to locate PSF)")
-    parser.add_argument("-n", "--iterations", type=int, required=True, help="Number of iterations of deconvolution")
+    parser.add_argument("-t", "--tiles", type=int, required=True, help="Wheter tile the image before deconvolution")
     parser.add_argument("-b", "--scale", required=True, help="Wheter to scale the deconvolved image to the full bit depth")
+    parser.add_argument("-n", "--iterations", type=int, required=True, help="Number of iterations of deconvolution")
     return parser.parse_args()
 
 
@@ -129,8 +128,9 @@ def main():
     z_pixel = args.z_pixel
     fluos = args.fluos
     psf_dir = args.psf_dir
-    iterations = args.iterations
+    tiles = args.tiles
     scale = args.scale.lower() in ('1', 'true', 'yes')
+    iterations = args.iterations
 
     dw_dir = Path(imgs[0]).parent / 'dw'
     dw_dir.mkdir(parents=True, exist_ok=True)
@@ -147,6 +147,7 @@ def main():
             z_pixel=z_pixel,
             iterations=iterations,
             scale=scale,
+            tiles=tiles,
             dw_dir=dw_dir
         )
 
