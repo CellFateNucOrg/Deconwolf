@@ -239,7 +239,7 @@ Before running Deconwolf, specify the following parameters in the `dw.sh` script
 - `mag`: the total magnification.
 - `z_pixel`: the spacing between planes in nm.
 - `scale`: whether to rescale the deconvolved images. If True, each pixel value is multiplied by $\frac{2^{16}-1}{I_{max}}$, i.e., the bit depth of a 16-bit image divided by the maximum pixel value in the deconvolved 32-bit float image (which is what Deoconwolf uses internally). Rescaling prevents image saturation, which can be helpful if your raw image has very bright pixels, but makes histograms less comparable between different images. Default is False.
-- `tiles`: tile size in pixels. If you deconvolve large files and run into memory issues, tiling may help. Set to 0 to deconvolve your images at full size.
+- `tiles`: tile size in pixels. If you deconvolve large files and run into memory issues, tiling may help. Set to 0 to if you want to deconvolve your images at full size.
 - `iterations`: the number of rounds of deconvolution you want. Default is 50 iterations.
 
 It is recommended to run the script on one of the stronger GPUs (RTX 4090 or RTX 6000), otherwise it tends to crash, especially with large files. To do so, use the `#SBATCH` command in the script:
