@@ -145,7 +145,7 @@ git clone https://github.com/CellFateNucOrg/deconwolf.git
 2. Install the required dependencies:
 ```
 mamba activate dw
-pip install numpy zarr pypi-json tifffile bioio bioio_tifffile bioio_nd2 bioio_czi bioio_lif bioio_bioformats
+pip install numpy zarr pypi-json tifffile bioio bioio_tifffile bioio_nd2 bioio_czi bioio_ome_tiff bioio_lif bioio_bioformats
 ```
 # How to use Deconwolf
 Deconvolution requires the image of a point spread function (PSF, i.e., the probability distribution of light emitted by a single point source). Every unique combination of emission wavelength, numerical aperture (NA) of the objective, refractive index (n) of the used immersion oil, lateral pixel size (in the acquired image) and vertical pixel size (the spacing between the planes in a 3D image) requires an individual PSF. There are two ways of creating a PSF image: you can either acquire it using fluorescent beads (not covered here) or model it. Deconwolf provides a small program for modelling PSFs, which is explained in the following section.
