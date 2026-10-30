@@ -6,24 +6,25 @@
 #SBATCH --mem 64GB
 #SBATCH --gres=gpu:rtx6000:1
 
-# Directories with raw images
-img_dirs=(
+#### Config ####
+
+src_dirs=(
 
 )
-
-# Configs for deconvolution
-suffix=nd2
-dw_dir=
-dw_dir=${dw_dir/Volumes/mnt}
-psf_dir=${dw_dir}/psf
-channels=(0 1)
-fluos=(mcherry gfp)
+filter_out=(DS_Store)
+dw_dir=/path/to/deconwolf
+psf_dir=/Volumes/meister.data/deconwolf/psf
+channels=(0)
+fluos=(gfp)
 scope=lipsi
 mag=100
 z_pixel=200
-tiles=500
-scale=False
+tiles=0
+scale=false
 iterations=50
+skip_old=true
+
+#### Script ####
 
 # Run deconvolution
 source $HOME/miniforge3/bin/activate dw
